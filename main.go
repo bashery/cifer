@@ -35,33 +35,43 @@ func decrypt(data []byte, passphrase string) []byte {
 	block, _ := aes.NewCipher(key)
 	gcm, _ := cipher.NewGCM(block)
 	nonceSize := gcm.NonceSize()
+	fmt.Println(nonceSize)
 	nonce, ciphertext := data[:nonceSize], data[nonceSize:]
 	plaintext, _ := gcm.Open(nil, nonce, ciphertext, nil)
 	return plaintext
 }
 
-func encryptFile(data []byte, fileName, passphrase string) {
-	file, _ := os.Create(fileName)
+func encryptFile(sourceFile, passphrase string) {
+
+	data, _ := ioutil.ReadFile(sourceFile)
+
+	file, _ := os.Create("e" + sourceFile)
 	defer file.Close()
+
 	file.Write(encrypt(data, passphrase))
 }
 
-func decryptFile(fileName, passphrase string) []byte {
+func decryptFile(fileName, passphrase string) {
 	data, _ := ioutil.ReadFile(fileName)
-	return decrypt(data, passphrase)
+	fmt.Println("len data: ", len(data))
+
+	decryptData := decrypt(data, passphrase)
+	ioutil.WriteFile("d"+fileName, decryptData, 0)
 }
 
 func main() {
-	ciphertext := encrypt([]byte("hello worlds"), mypass)
-	fmt.Println(string(ciphertext))
-	fmt.Println()
+	sourceFile := "test.txt"
 
-	plaintext := decrypt(ciphertext, mypass)
-	fmt.Println(string(plaintext))
+	/*
+		ciphertext := encrypt([]byte("hello worlds"), mypass)
+		fmt.Println(string(ciphertext))
+		fmt.Println()
 
-	fmt.Println()
-	encryptFile([]byte("hello world"), "example.txt", mypass)
-	plaintext = decryptFile("example.txt", mypass)
-	fmt.Println(string(plaintext))
+		plaintext := decrypt(ciphertext, mypass)
+		fmt.Println(string(plaintext))
+	*/
+	encryptFile(sourceFile, mypass)
+	decryptFile("e"+sourceFile, mypass)
+	fmt.Println("Done")
 
 }
