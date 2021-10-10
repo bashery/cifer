@@ -6,6 +6,7 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -56,11 +57,32 @@ func decryptFile(fileName, passphrase string) {
 	fmt.Println("len data: ", len(data))
 
 	decryptData := decrypt(data, passphrase)
-	ioutil.WriteFile("d"+fileName, decryptData, 0)
+	ioutil.WriteFile("d"+fileName, decryptData, 0644)
 }
 
 func main() {
-	sourceFile := "test.txt"
+	mypass := "123456"
+
+	encFile := flag.String("enc", "", "encrypt file")
+	decFile := flag.String("dec", "", "decrypt file")
+	flag.Parse()
+
+	if *encFile != "" {
+		encryptFile(*encFile, mypass)
+		fmt.Printf("encrypted %s file\n", *encFile)
+		return
+
+	}
+	if *decFile != "" {
+		decryptFile(*decFile, mypass)
+		fmt.Printf("decrypted %s file\n", *decFile)
+		return
+	}
+
+	fmt.Println("Done")
+
+	//decFile := flag.String("decFile", "decFile", "input file name that you will encryption")
+	//flag.Parse()
 
 	/*
 		ciphertext := encrypt([]byte("hello worlds"), mypass)
@@ -70,8 +92,5 @@ func main() {
 		plaintext := decrypt(ciphertext, mypass)
 		fmt.Println(string(plaintext))
 	*/
-	encryptFile(sourceFile, mypass)
-	decryptFile("e"+sourceFile, mypass)
-	fmt.Println("Done")
 
 }
