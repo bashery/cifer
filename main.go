@@ -67,6 +67,11 @@ func main() {
 
 	flag.Parse()
 
+	if *mypass == "" {
+		fmt.Println("password is required. do not forget your password")
+		os.Exit(1)
+	}
+
 	if *encFile != "" {
 		encryptFile(*encFile, *mypass)
 		fmt.Printf("encrypted %s file\n", *encFile)
