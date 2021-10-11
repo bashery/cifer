@@ -13,8 +13,6 @@ import (
 	"os"
 )
 
-var mypass = "mypass"
-
 func createHash(key string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(key))
@@ -61,36 +59,27 @@ func decryptFile(fileName, passphrase string) {
 }
 
 func main() {
-	mypass := "123456"
+
+	mypass := flag.String("pass", "", "password is reqired")
 
 	encFile := flag.String("enc", "", "encrypt file")
 	decFile := flag.String("dec", "", "decrypt file")
+
 	flag.Parse()
 
 	if *encFile != "" {
-		encryptFile(*encFile, mypass)
+		encryptFile(*encFile, *mypass)
 		fmt.Printf("encrypted %s file\n", *encFile)
+		fmt.Println("Done")
 		return
 
 	}
+
 	if *decFile != "" {
-		decryptFile(*decFile, mypass)
+		decryptFile(*decFile, *mypass)
 		fmt.Printf("decrypted %s file\n", *decFile)
+		fmt.Println("Done")
 		return
 	}
-
-	fmt.Println("Done")
-
-	//decFile := flag.String("decFile", "decFile", "input file name that you will encryption")
-	//flag.Parse()
-
-	/*
-		ciphertext := encrypt([]byte("hello worlds"), mypass)
-		fmt.Println(string(ciphertext))
-		fmt.Println()
-
-		plaintext := decrypt(ciphertext, mypass)
-		fmt.Println(string(plaintext))
-	*/
 
 }
