@@ -11,6 +11,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func createHash(key string) string {
@@ -44,7 +45,7 @@ func encryptFile(sourceFile, passphrase string) {
 
 	data, _ := ioutil.ReadFile(sourceFile)
 
-	file, _ := os.Create("e" + sourceFile)
+	file, _ := os.Create("e." + sourceFile)
 	defer file.Close()
 
 	file.Write(encrypt(data, passphrase))
@@ -55,7 +56,8 @@ func decryptFile(fileName, passphrase string) {
 	fmt.Println("len data: ", len(data))
 
 	decryptData := decrypt(data, passphrase)
-	ioutil.WriteFile("d"+fileName, decryptData, 0644)
+	fileName = strings.TrimPrefix(fileName, "e.")
+	ioutil.WriteFile(fileName, decryptData, 0644)
 }
 
 func main() {
